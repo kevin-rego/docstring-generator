@@ -1,0 +1,7 @@
+langchain[llms]==0.0.284
+python-dotenv==1.0.0
+openai==0.27.8
+tiktoken==0.4.0
+bs4
+unstructured[all-docs]==0.10.15
+streamlit

@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: aitesting 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aitesting
+  template:
+    metadata:
+      labels:
+        app: aitesting 
+    spec:
+      containers:
+        - name: aitesting 
+          image: aitesting123.azurecr.io/aitesting
+          ports:
+          - containerPort: 8501

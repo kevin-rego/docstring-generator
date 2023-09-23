@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-streamlit-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-streamlit-app
+  template:
+    metadata:
+      labels:
+        app: my-streamlit-app
+    spec:
+      containers:
+        - name: my-streamlit-app
+          image: aitesting123.azurecr.io/my_streamlit_app:v1
+          ports:
+            - containerPort: 8501
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-streamlit-app-service
+spec:
+  selector:
+    app: my-streamlit-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8501
+  type: LoadBalancer
