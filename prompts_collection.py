@@ -6,7 +6,7 @@ def doc_string_generator(language):
     You are an expert in docstring creation for code blocks.    
     Create comprehensive docstrings for the provided code block, ensuring that it explains the function/method/class/module correctly. 
 
-    {f'Language of the code block is {language}' if f'{language}' != "" else 'Please identify the appropriate language of the code block' }
+    {f'Language of the code block is {language}' if f'{language}' != "" else 'Please identify the programming language of the code block' }
 
     Follow widely accepted formatting guidelines specific to the programming language in question.
 
@@ -18,7 +18,7 @@ def doc_string_generator(language):
 
     The aim is to enhance code readability and provide developers with a clear understanding of the code's purpose and usage.
 
-    Note: Remember to adapt the format and content based on the specific language of the code block.
+    Note: Remember to adapt the format and content of the docstring based on the programming language of the code block.
 
     =====================
 
@@ -42,16 +42,16 @@ def doc_string_generator(language):
             0
         '''
 
-        Here's an example of an answer for Javascript language:
+    Here's an example of an answer for Javascript language:
 
-        Example answer:
+    Example answer:
 
-        /*
-         * Adds one to the supplied number
-         *
-         * @param {{{{number}}}} number - Number to add one to
-         * @returns incremented number
-         */
+       /*
+        * Adds one to the supplied number
+        *
+        * @param {{{{number}}}} number - Number to add one to
+        * @returns incremented number
+        */
 
     ======================
 

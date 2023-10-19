@@ -17,10 +17,6 @@ st.set_page_config(
 )
 
 
-# Create a text input box to allow the user to enter the download folder path
-download_folder = os.path.join("streamlit_apps", "data")
-code_folder = "streamlit_apps/code_files"
-
 # Sidebar UI for inputting OpenAI API parameters
 openai_api_key = st.sidebar.text_input(
     "Enter your OpenAI API Key (mandatory)", type="password"
@@ -53,8 +49,7 @@ chunk_size = st.sidebar.number_input(
 chunk_overlap = st.sidebar.number_input(
     label="Chunk Overlap", min_value=0, max_value=3500, step=10, value=100
 )
-# Create the target directory to save the code files
-os.makedirs(code_folder, exist_ok=True)
+
 
 # Mapping file extensions to their respective programming languages and splitters
 file_extensions = {
@@ -119,15 +114,6 @@ file_extensions = {
         ),
     },
 }
-
-
-# Function to delete the temp folder and its contents
-def delete_folder(folder_path):
-    try:
-        shutil.rmtree(folder_path)
-        # st.write(f"Deleted folder: {folder_path}")
-    except Exception as e:
-        st.write(f"Error deleting folder: {e}")
 
 
 # Convert a GitHub repository URL to its corresponding API URL
@@ -247,8 +233,8 @@ def generate_doc_strings(document, openai_data):
     )
 
     language = document.metadata.get("language", "")
-
     prompt = doc_string_generator(language)
+    st.write(prompt)
     chain = prompt | model | StrOutputParser()
 
     answer = chain.invoke({"code": document.page_content})
@@ -349,10 +335,7 @@ def main():
         for document in splitted_docs:
             st.write(f"FileName: {os.path.basename(document.metadata['file_name'])}")
             with st.spinner("Generating docstrings..."):
-                st.code(
-                    generate_doc_strings(document, openai_data),
-                    language=document.metadata.get("language", ""),
-                )
+                st.code(generate_doc_strings(document, openai_data))
         st.session_state.continue_generation = False
 
 
