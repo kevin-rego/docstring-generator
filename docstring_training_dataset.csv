@@ -1,0 +1,2391 @@
+User,Docstring
+"Generate docstring for
+def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree', verbose=False): X = [] y = [] # Loop through each person in the training set for class_dir in os.listdir(train_dir): if not os.path.isdir(os.path.join(train_dir, class_dir)): continue # Loop through each training image for the current person for img_path in image_files_in_folder(os.path.join(train_dir, class_dir)): image = face_recognition.load_image_file(img_path) face_bounding_boxes = face_recognition.face_locations(image) if len(face_bounding_boxes) != 1: # If there are no people (or too many people) in a training image, skip the image. if verbose: print(""Image {} not suitable for training: {}"".format(img_path, ""Didn't find a face"" if len(face_bounding_boxes) < 1 else ""Found more than one face"")) else: # Add face encoding for current image to the training set X.append(face_recognition.face_encodings(image, known_face_locations=face_bounding_boxes)[0]) y.append(class_dir) # Determine how many neighbors to use for weighting in the KNN classifier if n_neighbors is None: n_neighbors = int(round(math.sqrt(len(X)))) if verbose: print(""Chose n_neighbors automatically:"", n_neighbors) # Create and train the KNN classifier knn_clf = neighbors.KNeighborsClassifier(n_neighbors=n_neighbors, algorithm=knn_algo, weights='distance') knn_clf.fit(X, y) # Save the trained KNN classifier if model_save_path is not None: with open(model_save_path, 'wb') as f: pickle.dump(knn_clf, f) return knn_clf
+","""""""Trains a KNN classifier to recognize faces. Args: train_dir: The directory containing the training images. model_save_path: The path to save the trained model to. If `None`, the model will not be saved. n_neighbors: The number of neighbors to use for weighting in the KNN classifier. If `None`, the number of neighbors will be chosen automatically. knn_algo: The algorithm to use for the KNN classifier. Valid values are `ball_tree` and `kd_tree`. verbose: Whether to print progress messages. Returns: A trained KNN classifier. """""""
+"generate docstring for def calculate_present_value(cashflows, discount_rate):   return np.sum(cashflows / ((1 + discount_rate) ** np.arange(1, len(cashflows) + 1)))","""""""Calculates the present value of a series of cashflows. Args: cashflows: A list of cashflows, where each cashflow is a float. discount_rate: A float representing the discount rate. Returns: A float representing the present value of the cashflows. """""""
+"generate docstring for def calculate_option_price(S, K, T, r, sigma):
+    d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+    option_price = S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+    return option_price","""""""Calculate the Black-Scholes price of a European call option. Args: S (float): Current stock price K (float): Strike price T (float): Time to maturity in years r (float): Annual risk-free rate sigma (float): Volatility of stock price Returns: float: Call option price """""""
+"generate docstring for def calculate_portfolio_variance(weights, cov_matrix):   portfolio_variance = np.dot(weights, np.dot(cov_matrix, weights))   return portfolio_variance","""""""Calculates the portfolio variance. Args: weights: A NumPy array of weights for each asset in the portfolio. cov_matrix: A NumPy array of the covariance matrix for the assets in the portfolio. Returns: A float representing the portfolio variance. """""""
+"generate docstring for def calculate_present_value(cashflows, discount_rate):
+    return np.sum(cashflows / ((1 + discount_rate) ** np.arange(1, len(cashflows) + 1)))","""""""Calculate the present value of a series of cash flows.
+
+Args:
+    cashflows: List of cash flows over time.
+    discount_rate: The discount rate to use.
+
+Returns:
+    The present value of the cash flows.
+"""""""
+"generate docstring for def calculate_portfolio_variance(weights, cov_matrix):
+    portfolio_variance = np.dot(weights, np.dot(cov_matrix, weights))
+    return portfolio_variance","""""""Calculate the variance of a portfolio. 
+
+Args:
+    weights: List of portfolio weights.
+    cov_matrix: Covariance matrix of asset returns.
+    
+Returns:
+    The portfolio variance.
+"""""""
+"generate docstring for def calculate_option_price(S, K, T, r, sigma):
+    d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+    option_price = S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+    return option_price","""""""Calculate the price of a European call option using the Black-Scholes model.
+
+Args:
+    S: Current stock price.
+    K: Strike price of the option.
+    T: Time to expiration in years.
+    r: Annual risk-free rate. 
+    sigma: Volatility of stock price.
+    
+Returns:
+    The option price.
+"""""""
+"generate docstring for def nearestPD(A):
+    B = (A + A.T) / 2
+    _, s, V = la.svd(B)
+    H = np.dot(V.T, np.dot(np.diag(s), V))
+    A2 = (B + H) / 2
+    A3 = (A2 + A2.T) / 2
+    if isPD(A3):
+        return A3
+    spacing = np.spacing(la.norm(A))
+    I = np.eye(A.shape[0]) 
+    k = 1
+    while not isPD(A3):
+        mineig = np.min(np.real(la.eigvals(A3)))
+        A3 += I * (-mineig * k**2 + spacing)
+        k += 1
+    return A3","""""""Find the nearest positive-definite matrix to input.
+
+Args:
+    A: Input matrix.
+
+Returns:
+    Nearest positive-definite matrix.
+"""""""
+"generate docstring for def isPD(B):
+    try:
+        _ = la.cholesky(B)
+        return True
+    except la.LinAlgError:
+        return False","""""""Returns true when input is positive-definite, via Cholesky.
+
+Args:
+    B: Input matrix.
+    
+Returns:
+    True if B is positive-definite, False otherwise.
+"""""""
+"generate docstring for def sample_cov(r, **kwargs):
+    return r.cov()","""""""Returns the sample covariance of the supplied returns.
+
+Args:
+    r: Asset returns.
+    
+Returns:
+    Sample covariance matrix.
+"""""""
+"generate docstring for def weight_gmv(r, cov_estimator=sample_cov, **kwargs):
+    est_cov = cov_estimator(r, **kwargs)
+    return gmv(est_cov)","""""""Produces weights for GMV portfolio given a covariance matrix of asset returns.
+
+Args:
+    r: Asset returns.
+    cov_estimator: Function to estimate covariance matrix from returns.
+    
+Returns:
+    Optimal GMV portfolio weights.
+"""""""
+"generate docstring for def cc_cov(r, **kwargs):
+    rhos = r.corr()
+    n = rhos.shape[0]
+    rho_bar = (rhos.values.sum()-n)/(n*(n-1))
+    ccor = np.full_like(rhos, rho_bar)
+    np.fill_diagonal(ccor, 1.)
+    sd = r.std()
+    return pd.DataFrame(ccor * np.outer(sd, sd), index=r.columns, columns=r.columns)","""""""Estimates a covariance matrix using the Constant Correlation model.
+
+Args:
+    r: Asset returns.
+    
+Returns:
+    Estimated constant correlation covariance matrix.  
+"""""""
+"generate docstring for def shrinkage_cov(r, delta=0.5, **kwargs):
+    prior = cc_cov(r, **kwargs)
+    sample = sample_cov(r, **kwargs)
+    return delta*prior + (1-delta)*sample","""""""Estimates a covariance matrix shrinking sample covariance toward constant correlation.
+
+Args:
+    r: Asset returns.
+    delta: Shrinkage parameter.
+    
+Returns:
+    Shrunk covariance matrix.
+"""""""
+"generate docstring for def get_ffme_returns():
+    me_m = pd.read_csv(""data/Portfolios_Formed_on_ME_monthly_EW.csv"",
+                       header=0, index_col=0, na_values=-99.99)
+    rets = me_m[['Lo 10', 'Hi 10']]
+    rets.columns = ['SmallCap', 'LargeCap']
+    rets = rets/100
+    rets.index = pd.to_datetime(rets.index, format=""%Y%m"").to_period('M')
+    return rets","""""""Load Fama-French size portfolio returns. 
+
+Returns:
+    DataFrame with 10th and 90th percentile size portfolio returns.
+"""""""
+"generate docstring for def get_fff_returns():
+    rets = pd.read_csv(""data/F-F_Research_Data_Factors_m.csv"",  
+                       header=0, index_col=0, na_values=-99.99)/100
+    rets.index = pd.to_datetime(rets.index, format=""%Y%m"").to_period('M')
+    return rets","""""""Load Fama-French research factor returns.
+
+Returns:
+    DataFrame with Fama-French factor returns.
+"""""""
+"generate docstring for def get_hfi_returns():
+    hfi = pd.read_csv(""data/edhec-hedgefundindices.csv"",
+                      header=0, index_col=0, parse_dates=True)
+    hfi = hfi/100
+    hfi.index = hfi.index.to_period('M')
+    return hfi","""""""Load and format EDHEC Hedge Fund Index returns.
+
+Returns:
+    DataFrame with formatted hedge fund index returns.
+"" """""
+"generate docstring for def get_ind_file(filetype, weighting=""vw"", n_inds=30):
+    if filetype is ""returns"":
+        name = f""{weighting}_rets""
+        divisor = 100
+    elif filetype is ""nfirms"":
+        name = ""nfirms""
+        divisor = 1
+    elif filetype is ""size"":
+        name = ""size""
+        divisor = 1
+    else:
+        raise ValueError(f""filetype must be one of: returns, nfirms, size"")
+    ind = pd.read_csv(f""data/ind{n_inds}_m_{name}.csv"", header=0, index_col=0, na_values=-99.99)/divisor
+    ind.index = pd.to_datetime(ind.index, format=""%Y%m"").to_period('M')
+    ind.columns = ind.columns.str.strip()
+    return ind","""""""Load and format Ken French industry portfolio data.
+
+Args:
+    filetype: Type of data to load, e.g. returns, nfirms, size.
+    weighting: Portfolio weighting scheme, 'ew' or 'vw'. 
+    n_inds: Number of industry portfolios to load.
+    
+Returns:
+    DataFrame with loaded and formatted data.
+"""""""
+"generate docstring for def get_ind_returns(weighting=""vw"", n_inds=30):
+    return get_ind_file(""returns"", weighting=weighting, n_inds=n_inds)","""""""Load and format Ken French industry portfolio returns.
+
+Args:
+    weighting: Portfolio weighting scheme, 'ew' or 'vw'.
+    n_inds: Number of industry portfolios to load.  
+
+Returns:
+    DataFrame with industry portfolio returns. 
+"""""""
+"generate docstring for def get_ind_nfirms(n_inds=30):
+    return get_ind_file(""nfirms"", n_inds=n_inds)","""""""Load and format average number of firms in Ken French industry portfolios.
+
+Args:
+    n_inds: Number of industry portfolios to load.
+    
+Returns:
+    DataFrame with average number of firms.
+"""""""
+"generate docstring for def get_ind_size(n_inds=30):
+    return get_ind_file(""size"", n_inds=n_inds)","""""""Load and format average size of Ken French industry portfolios. 
+
+Args:
+    n_inds: Number of industry portfolios to load.
+    
+Returns:
+    DataFrame with average market cap.
+"""""""
+"generate docstring for def get_ind_market_caps(n_inds=30, weights=False):
+    ind_nfirms = get_ind_nfirms(n_inds=n_inds)
+    ind_size = get_ind_size(n_inds=n_inds)
+    ind_mktcap = ind_nfirms * ind_size
+    if weights:
+        total_mktcap = ind_mktcap.sum(axis=1)
+        ind_capweight = ind_mktcap.divide(total_mktcap, axis=""rows"")
+        return ind_capweight
+    return ind_mktcap","""""""Derive market cap weights from Ken French industry portfolio data.
+
+Args:
+    n_inds: Number of industry portfolios. 
+    weights: If True, return cap weights. Otherwise, total caps.
+    
+Returns:
+    DataFrame with market cap weights or total caps.
+"""""""
+"generate docstring for def get_total_market_index_returns(n_inds=30):
+    ind_capweight = get_ind_market_caps(n_inds=n_inds)  
+    ind_return = get_ind_returns(weighting=""vw"", n_inds=n_inds)
+    total_market_return = (ind_capweight * ind_return).sum(axis=""columns"")
+    return total_market_return","""""""Derive total market cap-weighted index returns from Ken French data. 
+
+Args:
+    n_inds: Number of industry portfolios used.
+    
+Returns:
+    Series with market cap weighted total returns.
+"""""""
+"generate docstring for def skewness(r):
+    demeaned_r = r - r.mean()
+    sigma_r = r.std(ddof=0)
+    exp = (demeaned_r**3).mean()            
+    return exp/sigma_r**3","""""""Compute skewness of supplied Series or DataFrame.
+
+Args:
+    r: Returns to compute skewness on.
+    
+Returns:
+    Skewness as float or Series.
+"""""""
+"generate docstring for def kurtosis(r):
+    demeaned_r = r - r.mean()
+    sigma_r = r.std(ddof=0)
+    exp = (demeaned_r**4).mean()            
+    return exp/sigma_r**4","""""""Compute kurtosis of supplied Series or DataFrame.
+
+Args:
+    r: Returns to compute kurtosis on.
+
+Returns:
+    Kurtosis as float or Series. 
+"""""""
+"generate docstring for def compound(r):
+    return np.expm1(np.log1p(r).sum())","""""""Compound set of returns.
+
+Args:
+    r: Returns to compound.
+    
+Returns:
+    Compounded total return.
+"""""""
+"generate docstring for def annualize_rets(r, periods_per_year):
+    compounded_growth = (1+r).prod()
+    n_periods = r.shape[0]
+    return compounded_growth**(periods_per_year/n_periods)-1","""""""Annualize a set of returns.
+
+Args:
+    r: Returns to annualize.
+    periods_per_year: Periods per year.
+    
+Returns:
+    Annualized returns.
+"""""""
+"generate docstring for def annualize_vol(r, periods_per_year):
+    return r.std()*(periods_per_year**0.5)","""""""Annualize volatility of a set of returns.
+
+Args:
+    r: Returns to annualize volatility of.
+    periods_per_year: Periods per year.
+    
+Returns:
+    Annualized volatility.
+"""""""
+"generate docstring for def sharpe_ratio(r, riskfree_rate, periods_per_year):
+    rf_per_period = (1+riskfree_rate)**(1/periods_per_year)-1
+    excess_ret = r - rf_per_period
+    ann_ex_ret = annualize_rets(excess_ret, periods_per_year)
+    ann_vol = annualize_vol(r, periods_per_year)
+    return ann_ex_ret/ann_vol","""""""Compute annualized Sharpe ratio of a set of returns.
+
+Args:
+    r: Returns.
+    risk_free_rate: Annual risk-free rate.  
+    periods_per_year: Periods per year.
+    
+Returns:
+    Annualized Sharpe ratio.
+"""""""
+"generate docstring for def is_normal(r, level=0.01):
+    if isinstance(r, pd.DataFrame):
+        return r.aggregate(is_normal)
+    else:
+        statistic, p_value = scipy.stats.jarque_bera(r)
+        return p_value > level","""""""Perform Jarque-Bera normality test on returns.
+
+Args:
+    r: Returns to test.
+    level: Significance level.
+    
+Returns:
+    True if normal, False otherwise.
+"""""""
+"generate docstring for def drawdown(return_series: pd.Series):
+    wealth_index = 1000*(1+return_series).cumprod()
+    previous_peaks = wealth_index.cummax()
+    drawdowns = (wealth_index - previous_peaks)/previous_peaks
+    return pd.DataFrame({""Wealth"": wealth_index,  
+                         ""Previous Peak"": previous_peaks, 
+                         ""Drawdown"": drawdowns})","""""""Compute drawdowns from a returns time series.
+
+Args:
+    return_series: Returns series.
+    
+Returns:
+    DataFrame with columns for wealth index, previous peaks, and drawdowns.
+"""""""
+"generate docstring for def semideviation(r):
+    if isinstance(r, pd.Series):
+        is_negative = r < 0
+        return r[is_negative].std(ddof=0)
+    elif isinstance(r, pd.DataFrame):
+        return r.aggregate(semideviation)
+    else:
+        raise TypeError(""Expected r to be a Series or DataFrame"")","""""""Compute semideviation (negative semideviation) of a returns series.
+
+Args:
+    r: Returns series.   
+    
+Returns:
+    Semideviation as float.
+"""""""
+"generate docstring for def var_historic(r, level=5):
+    if isinstance(r, pd.DataFrame):
+        return r.aggregate(var_historic, level=level)
+    elif isinstance(r, pd.Series):
+        return -np.percentile(r, level)
+    else:
+        raise TypeError(""Expected r to be a Series or DataFrame"")","""""""Compute Value at Risk (VaR) from a returns series at given confidence level.
+
+Args:
+    r: Returns series.
+    level: Confidence level, e.g. 95%.
+    
+Returns:
+    VaR as a float.
+"""""""
+"generate docstring for def cvar_historic(r, level=5):
+    if isinstance(r, pd.Series):
+        is_beyond = r <= -var_historic(r, level=level)
+        return -r[is_beyond].mean() 
+    elif isinstance(r, pd.DataFrame):
+        return r.aggregate(cvar_historic, level=level)
+    else:
+        raise TypeError(""Expected r to be a Series or DataFrame"")","""""""Compute Conditional VaR (CVaR) from a returns series at given confidence level.
+
+Args:
+    r: Returns series.
+    level: Confidence level, e.g. 95%.
+
+Returns: 
+    CVaR as a float. 
+"""""""
+"generate docstring for def var_gaussian(r, level=5, modified=False):
+    z = norm.ppf(level/100)  
+    if modified:    
+        s = skewness(r)
+        k = kurtosis(r)
+        z = (z + 
+                (z**2 - 1)*s/6 + 
+                (z**3 -3*z)*(k-3)/24 -                
+                (2*z**3 - 5*z)*(s**2)/36
+           )
+    return -(r.mean() + z*r.std(ddof=0))","""""""Compute parametric Gaussian VaR from a returns series.
+
+Args:  
+    r: Returns series.
+    level: Confidence level, e.g. 95%.
+    modified: Whether to apply Cornish-Fisher modification.
+    
+Returns:
+    Parametric Gaussian VaR as a float. 
+"""""""
+"generate docstring for def portfolio_return(weights, returns):
+    return weights.dot(returns)","""""""Compute portfolio return from a set of weighted constituent returns.
+
+Args:
+    weights: Portfolio weights.
+    returns: Constituent returns.
+    
+Returns:
+    Portfolio return.
+"""""""
+"generate docstring for def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
+","""""""
+    Sorts an array using the bubble sort algorithm.
+
+    Args:
+        arr (list): List of elements to be sorted.
+
+    Returns:
+        list: Sorted list.
+    """""""
+"generate docstring for def to_lowercase(string):
+    return string.lower()
+","""""""
+    Converts a string to lowercase.
+
+    Args:
+        string (str): String to be converted.
+
+    Returns:
+        str: String in lowercase.
+    """""""
+"generate docstring for def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+","""""""
+    Calculates factorial of a number.
+
+    Args:
+        n (int): Number to calculate factorial for.
+
+    Returns:
+        int: Factorial of n.
+    """""""
+"generate docstring for def linear_search(arr, x):
+    for i in range(len(arr)):
+        if arr[i] == x:
+            return i
+    return -1
+","""""""
+    Performs linear search to find an element in a list.
+
+    Args:
+        arr (list): List of elements.
+        x (any): Element to search for.
+
+    Returns:
+        int: Index of the element if found, else -1.
+    """""""
+"generate docstring for 
+function bubbleSort(arr) {
+    let n = arr.length;
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    return arr;
+}
+        ","/**
+ * Sorts an array using the bubble sort algorithm.
+ *
+ * @param {Array} arr - The array to be sorted.
+ * @returns {Array} - The sorted array.
+ */
+        "
+"generate docstring for
+function toLowerCase(string) {
+    return string.toLowerCase();
+}
+        ","
+/**
+ * Converts a string to lowercase.
+ *
+ * @param {string} string - The string to be converted.
+ * @returns {string} - The string in lowercase.
+ */
+        "
+"generate docstring for
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
+        ","
+/**
+ * Calculates factorial of a number.
+ *
+ * @param {number} n - The number to calculate factorial for.
+ * @returns {number} - The factorial of n.
+ */
+        "
+"generate docstring for
+function linearSearch(arr, x) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === x) {
+            return i;
+        }
+    }
+    return -1;
+}
+        ","
+/**
+ * Performs linear search to find an element in an array.
+ *
+ * @param {Array} arr - The array of elements.
+ * @param {*} x - The element to search for.
+ * @returns {number} - The index of the element if found, else -1.
+ */
+        "
+"generate docstring for function add(a, b) {
+  return a + b;
+}","/**
+ * Adds two numbers together.
+ * @param {number} a The first number.
+ * @param {number} b The second number.
+ * @returns {number} The sum of the two numbers.
+ */"
+"generate docstring for function subtract(a, b) {
+  return a - b;
+}","/**
+ * Subtracts two numbers.
+ * @param {number} a The first number. 
+ * @param {number} b The number to subtract from a.
+ * @returns {number} The result of the subtraction.
+ */"
+"generate docstring for function multiply(a, b) {
+  return a * b;
+}","/**
+ * Multiplies two numbers together.
+ * @param {number} a The first number.
+ * @param {number} b The second number.
+ * @returns {number} The product of the numbers.
+ */"
+"generate docstring for function divide(a, b) {
+  return a / b; 
+}","/**
+ * Divides two numbers.
+ * @param {number} a The dividend. 
+ * @param {number} b The divisor.
+ * @returns {number} The quotient of the division. 
+ */"
+"generate docstring for function increment(n) {
+  return n + 1;
+}","/**
+ * Increments a number by 1.
+ * @param {number} n The number to increment.
+ * @returns {number} n + 1
+ */"
+"generate docstring for function decrement(n) {
+  return n - 1;
+}","/** 
+ * Decrements a number by 1.
+ * @param {number} n The number to decrement.
+ * @returns {number} n - 1
+ */"
+"generate docstring for function pow(base, exponent) {
+  return base ** exponent;
+}","/**
+ * Calculates the exponentiation of a base number raised to a power.
+ * @param {number} base The base number. 
+ * @param {number} exponent The power to raise the base to.
+ * @returns {number} base raised to the power exponent.
+ */"
+"generate docstring for function square(n) {
+  return n * n;
+}","/**
+ * Squares a number by multiplying it by itself.
+ * @param {number} n The number to square.
+ * @returns {number} n * n
+ */"
+"generate docstring for function cube(n) {
+  return n * n * n; 
+}","/**
+ * Cubes a number by raising it to the 3rd power.
+ * @param {number} n The number to cube.
+ * @returns {number} n * n * n
+ */"
+"generate docstring for function factorial(n) {
+  if (n === 0) return 1;
+  return n * factorial(n - 1);
+}","/**
+ * Calculates the factorial of an integer n.
+ * @param {number} n The number to take the factorial of.
+ * @returns {number} The factorial of n.  
+ */"
+"generate docstring for function fibonacci(n) {
+  if (n < 2) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}","/**
+ * Calculates the nth Fibonacci number recursively.
+ * @param {number} n The index of the Fibonacci number to compute. 
+ * @returns {number} The nth Fibonacci number.
+ */"
+"generate docstring for function isEven(n) {
+  return n % 2 === 0;
+}","/**
+ * Checks if a number is even. 
+ * @param {number} n The number to check.
+ * @returns {boolean} True if n is even, false if n is odd.
+ */"
+"generate docstring for function isOdd(n) {
+  return Math.abs(n % 2) === 1;
+}","/**
+ * Checks if a number is odd.
+ * @param {number} n The number to check.
+ * @returns {boolean} True if n is odd, false if n is even. 
+ */  "
+"generate docstring for function isPrime(n) {
+  for(let i = 2; i < n; i++) {
+    if(n % i === 0) return false;
+  }
+  return n > 1;
+}","/**
+ * Checks if a number is prime.
+ * @param {number} n The number to check.
+ * @returns {boolean} True if n is prime, false otherwise.
+ */"
+"generate docstring for function reverseString(str) {
+  return str.split('').reverse().join('');
+}","/** 
+ * Reverses the characters in a string.
+ * @param {string} str The string to reverse.
+ * @returns {string} The reversed string.
+ */"
+"generate docstring for function capitalize(str) {
+  return str[0].toUpperCase() + str.slice(1);
+}","/**
+ * Capitalizes the first letter of a string.
+ * @param {string} str The input string.
+ * @returns {string} The capitalized string.
+ */"
+"generate docstring for function upperCase(str) {
+  return str.toUpperCase();
+}","/**
+ * Converts a string to upper case. 
+ * @param {string} str The input string. 
+ * @returns {string} The upper case string.
+ */"
+"generate docstring for function lowerCase(str) {
+  return str.toLowerCase();
+}","/**
+ * Converts a string to lower case. 
+ * @param {string} str The input string.
+ * @returns {string} The lower case string. 
+ */"
+"generate docstring for function repeatString(str, n) {
+  return str.repeat(n);
+}","/**
+ * Repeats a string n times.
+ * @param {string} str The string to repeat.
+ * @param {number} n The number of times to repeat.
+ * @returns {string} The repeated string.
+ */ "
+"generate docstring for function truncateString(str, n) {
+  return str.slice(0, n);
+}","/**
+ * Truncates a string after n characters.
+ * @param {string} str The string to truncate.
+ * @param {number} n Number of characters where string gets truncated.
+ * @returns {string} The truncated string.
+ */"
+"generate docstring for function camelCase(str) {
+  
+}","/**
+ * Converts a string to camel case.  
+ * @param {string} str The input string.
+ * @returns {string} The camel cased string.
+ */"
+"generate docstring for function reverseArray(arr) {
+  return arr.slice().reverse();
+}","/**
+ * Reverses an array in place.
+ * @param {Array} arr The array to reverse.
+ * @returns {Array} The reversed array.
+ */"
+"generate docstring for function shuffleArray(arr) {
+  let i = arr.length;
+  while (i--) {
+    const ri = Math.floor(Math.random() * (i+1));
+    [arr[i], arr[ri]] = [arr[ri], arr[i]];
+  }
+  return arr;  
+}","/** 
+ * Shuffles an array in place.
+ * @param {Array} arr The array to shuffle.
+ * @returns {Array} The shuffled array.
+ */"
+"generate docstring for function chunkArray(arr, size) {
+  const chunked = [];
+  let i = 0;while (i < arr.length) {
+    chunked.push(arr.slice(i, i + size));
+    i += size;
+  }""
+""  return chunked;
+}","/**
+ * Splits an array into chunks of size n. 
+ * @param {Array} arr The array to chunk.
+ * @param {number} size The chunk size.
+ * @returns {Array} The chunked array.
+ */"
+"generate docstring for function compactArray(arr) {
+  return arr.filter(Boolean);
+}","/**
+ * Removes falsy values from an array.
+ * @param {Array} arr The array to compact.
+ * @returns {Array} Array with falsy values removed.
+ */"
+"generate docstring for function intersection(a, b) {
+  return a.filter(x => b.includes(x));
+} ","/**
+ * Computes the intersection of two arrays.
+ * @param {Array} a First array.
+ * @param {Array} b Second array.  
+ * @returns {Array} Intersection of the two arrays.
+ */"
+"generate docstring for function difference(a, b) {
+  return a.filter(x => !b.includes(x));
+}","/** 
+ * Computes the difference of two arrays.
+ * @param {Array} a First array.
+ * @param {Array} b Second array.
+ * @returns {Array} Values from a not in b. 
+ */"
+"generate docstring for function union(a, b) {
+  return [...new Set([...a, ...b])];
+}","/**
+ * Computes the union of two arrays.
+ * @param {Array} a First array 
+ * @param {Array} b Second array
+ * @returns {Array} Unique values from both arrays.
+ */"
+"generate docstring for function objectValues(obj) {
+  return Object.values(obj);
+}","/**
+ * Gets all object values.
+ * @param {Object} obj The object. 
+ * @returns {Array} The object values.
+ */ "
+"generate docstring for function objectKeys(obj) {
+  return Object.keys(obj);
+}","/**
+ * Gets all object keys. 
+ * @param {Object} obj The object.
+ * @returns {Array} The object keys.
+ */"
+"generate docstring for function pick(obj, keys) {
+  return keys.map(k => k in obj ? {[k]: obj[k]} : {})
+            .reduce((res, o) => Object.assign(res, o), {});
+}","/**
+ * Picks properties specified by keys from an object.
+ * @param {Object} obj The object to pick from.
+ * @param {string[]} keys The keys to pick.
+ * @returns {Object} A new object with the picked keys.
+ */"
+"generate docstring for function omit(obj, keys) {
+  const copy = {...obj};
+  keys.forEach(k => delete copy[k]);
+  return copy;
+}","/**
+ * Omits properties specified by keys from an object.
+ * @param {Object} obj The source object.
+ * @param {string[]} keys The keys to omit.
+ * @returns {Object} A new object without the omitted keys.
+ */"
+"generate docstring for function mapValues(obj, fn) {
+  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, fn(v)]));
+}","/**
+ * Maps values of an object via function.
+ * @param {Object} obj The source object. 
+ * @param {Function} fn Mapping function.
+ * @returns {Object} A new object with mapped values.
+ */"
+"generate docstring for function deepCopy(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}","/**
+ * Deep copies an object.
+ * @param {Object} obj The object to copy.
+ * @returns {Object} A deep copy of the object.
+ */ "
+"generate docstring for function objectEquals(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);  
+}","/**
+ * Checks if two objects have the same keys and values.
+ * @param {Object} a First object.
+ * @param {Object} b Second object.
+ * @returns {boolean} True if equal, false otherwise.
+ */"
+"generate docstring for function bind(fn, context, ...args) {
+  return fn.bind(context, ...args);
+}","/**
+ * Binds a function to a context and arguments.
+ * @param {Function} fn The function to bind.
+ * @param {Object} context The context to bind to.
+ * @param {...*} args Arguments to prepend. 
+ * @returns {Function} The bound function.
+ */"
+"generate docstring for function once(fn) {
+  let done = false;
+  return function(...args) {
+    if (!done) {
+      done = true;
+      fn.apply(this, args);
+    }
+  }
+}","/**
+ * Creates a function that can only be called once.
+ * @param {Function} fn The function to wrap.
+ * @returns {Function} A function that can be called only once.
+ */"
+"generate docstring for function after(n, fn) {
+  let counter = 0;
+  return function(...args) {
+    counter++;
+    if (counter === n) fn.apply(this, args);
+  }
+}","/**
+ * Creates a function that invokes fn only after n calls.
+ * @param {number} n Number of calls before fn is invoked. 
+ * @param {Function} fn Function to restrict.
+ * @returns {Function} Restricted function.
+ */"
+"generate docstring for function memoize(fn) {
+  const cache = new Map();
+  return function(...args) {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) return cache.get(key);
+    const res = fn.apply(this, args);
+    cache.set(key, res);
+    return res;
+  }
+}","/**
+ * Caches results of a function.
+ * @param {Function} fn The function to cache.
+ * @returns {Function} Memoized function.
+ */"
+"generate docstring for function pipe(...fns) {
+  return function(x) {
+    return fns.reduce((v, fn) => fn(v), x);
+  }
+}","/**
+ * Composes functions from right to left.
+ * @param {...Function} fns The functions to compose.
+ * @returns {Function} Composed function.
+ */ "
+"generate docstring for function compose(...fns) {
+  return function(x) {
+    return fns.reduceRight((v, fn) => fn(v), x);
+  }
+}","/** 
+ * Composes functions from left to right.
+ * @param {...Function} fns The functions to compose.
+ * @returns {Function} Composed function.
+ */"
+"generate docstring for function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}","/**
+ * Resolves after ms milliseconds. 
+ * @param {number} ms Milliseconds to wait.
+ * @returns {Promise} Promise that resolves after ms.
+ */"
+"generate docstring for function debounce(fn, ms) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn.apply(this, args), ms);
+  }
+}","/**
+ * Creates a debounced function.
+ * @param {Function} fn The function to debounce. 
+ * @param {number} ms The debounce delay in ms.
+ * @returns {Function} The debounced function.
+ */"
+"generate docstring for function throttle(fn, ms) {
+  let waiting = false;
+  return function(...args) {
+    if (waiting) return;
+    waiting = true;
+    fn.apply(this, args);
+    setTimeout(() => waiting = false, ms);
+  }  
+}","/**
+ * Creates a throttled function.
+ * @param {Function} fn The function to throttle.
+ * @param {number} ms The throttle delay in ms. 
+ * @returns {Function} Throttled function. 
+ */"
+"generate docstring for function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}","/**
+ * Generates a random integer between min and max.
+ * @param {number} min The minimum value.
+ * @param {number} max The maximum value.
+ * @returns {number} Random integer between min and max.
+ */"
+"generate docstring for function uuid() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
+}","/**
+ * Generates a UUID.
+ * @returns {string} UUID
+ */"
+"generate docstring for function logger(namespace) {
+  return function(message) {
+    console.log(`[${namespace}] ${message}`); 
+  }
+}","/**
+ * Creates a logger function.
+ * @param {string} namespace The logging namespace. 
+ * @returns {Function} Logger function.
+ */"
+"generate docstring for function times(n, fn) {
+  Array.from({length: n}, (_, i) => fn(i));
+}","/**
+ * Invokes a function n times.
+ * @param {number} n Number of invocations.
+ * @param {Function} fn Function to invoke.
+ */"
+"generate docstring for function requireUncached(module) {
+  delete require.cache[require.resolve(module)];
+  return require(module);  
+}
+","/**
+ * Requires a module bypassing the cache. 
+ * @param {string} module Module to require.
+ * @returns Required module.
+ */"
+"generate docsting for double sum(std::vector<double> & const values) {
+    ...
+}","/**
+ * Sum numbers in a vector.
+ *
+ * @param values Container whose values are summed.
+ * @return sum of `values`, or 0.0 if `values` is empty.
+ */"
+"generate docstring for template <typename T, typename ComparatorT = std::less<T>>
+class LookupTable
+{
+    ...
+}","/**
+ * Storage for arbitrary data with log(N) lookup.
+ *
+ * ...
+ *
+ * @tparam T the type of data stored in the table
+ * @tparam ComparatorT callable defining a strict weak ordering for objects
+ *     of type `T`. Its `operator()` must accept two `T` and return `true`
+ *     if and only if the first argument comes before the second. It must
+ *     not throw exceptions.
+ */"
+"generate docstring for protected long edgeCount() { long degreeSum = 0L; for (N node : nodes()) { degreeSum += degree(node); } // According to the degree sum formula, this is equal to twice the number of edges. checkState((degreeSum & 1) == 0); return degreeSum >>> 1; }","/**
+ * Returns the number of edges in the graph.
+ *
+ * This is calculated by summing the degrees of all nodes in the graph, dividing
+ * by two, and rounding up. This is because each edge is connected to two nodes.
+ *
+ * @return The number of edges in the graph.
+ */"
+generate docstring for public static char saturatedCast(long value) { if (value > Character.MAX_VALUE) { return Character.MAX_VALUE; } if (value < Character.MIN_VALUE) { return Character.MIN_VALUE; } return (char) value; },"/**
+ * Performs a saturated cast of the given long value to a char.
+ *
+ * If the value is greater than Character.MAX_VALUE, it is returned.
+ * If the value is less than Character.MIN_VALUE, it is returned.
+ * Otherwise, the value is cast to a char and returned.
+ *
+ * @param value The long value to be cast.
+ * @return The saturated cast of the given long value to a char.
+ */"
+"generate docstring for public static boolean isPowerOfTwo(BigInteger x) { checkNotNull(x); return x.signum() > 0 && x.getLowestSetBit() == x.bitLength() - 1; }	","/**
+ * Returns `true` if the given BigInteger is a power of two, `false` otherwise.
+ *
+ * A BigInteger is considered a power of two if and only if it is positive and has a single
+ * one bit. This can be determined by checking if the lowest set bit of the BigInteger is equal to
+ * its bit length minus one.
+ *
+ * @param x The BigInteger to check.
+ * @return `true` if the given BigInteger is a power of two, `false` otherwise.
+ */"
+generate docstring for parseInt,"
+/**
+ * Parses a string and returns an integer.
+ * @param {string} string - The string to parse
+ * @param {number} radix - An integer between 2 and 36 that represents the radix (optional)
+ * @returns {number} The parsed integer
+ */
+"
+generate docstring for parseFloat,"
+/**
+ * Parses a string and returns a float.
+ * @param {string} string - The string to parse
+ * @returns {number} The parsed float
+ */
+"
+generate docstring for isNaN,"
+/**
+ * Checks if a value is NaN.
+ * @param {*} value - The value to check
+ * @returns {boolean} True if value is NaN, false otherwise
+ */
+"
+generate docstring for isFinite,"
+/**
+ * Checks if a value is a finite number.
+ * @param {*} value - The value to check
+ * @returns {boolean} True if value is finite, false otherwise
+ */
+"
+generate docstring for encodeURI,"
+/**
+ * Encodes a URI.
+ * @param {string} uri - The URI to encode
+ * @returns {string} The encoded URI
+ */
+"
+generate docstring for decodeURI,"
+/**
+ * Decodes a URI.
+ * @param {string} encodedURI - The encoded URI to decode
+ * @returns {string} The decoded URI
+ */
+"
+generate docstring for encodeURIComponent,"
+/**
+ * Encodes a URI component.
+ * @param {string} uriComponent - The URI component to encode
+ * @returns {string} The encoded URI component
+ */
+"
+generate docstring for decodeURIComponent,"
+/**
+ * Decodes a URI component.
+ * @param {string} encodedURIComponent - The encoded URI component to decode
+ * @returns {string} The decoded URI component
+ */
+"
+generate docstring for escape,"
+/**
+ * Escapes a string for use in HTML.
+ * @param {string} string - The string to escape
+ * @returns {string} The escaped string
+ */
+"
+generate docstring for unescape,"
+/**
+ * Unescapes an escaped string.
+ * @param {string} escapedString - The escaped string to unescape
+ * @returns {string} The unescaped string
+ */
+"
+generate docstring for eval,"
+/**
+ * Evaluates JavaScript code represented as a string.
+ * @param {string} code - The code to evaluate
+ * @returns {*} The result of evaluating the code
+ */
+"
+generate docstring for isArray,"
+/**
+ * Checks if a value is an array.
+ * @param {*} value - The value to check
+ * @returns {boolean} True if value is an array, false otherwise
+ */
+"
+generate docstring for Date,"
+/**
+ * Creates a Date object.
+ * @param {number} year - The year
+ * @param {number} month - The month
+ * @param {number} day - The day
+ * @param {number} hour - The hours
+ * @param {number} minutes - The minutes
+ * @param {number} seconds - The seconds
+ * @param {number} milliseconds - The milliseconds
+ * @returns {Date} The created Date object
+ */
+"
+generate docstring for setTimeout,"
+/**
+ * Sets a timer that executes a function after a specified delay.
+ * @param {Function} callback - The function to execute
+ * @param {number} delay - The delay in milliseconds
+ * @returns {number} The ID of the timer  
+ */
+"
+generate docstring for clearTimeout,"
+/**
+ * Clears a timer set by setTimeout.
+ * @param {number} id - The id of the timer to clear 
+ */
+"
+generate docstring for setInterval,"
+/**
+ * Sets an interval that executes a function repeatedly.
+ * @param {Function} callback - The function to execute
+ * @param {number} delay - The interval delay in milliseconds
+ * @returns {number} The ID of the interval
+ */
+"
+generate docstring for clearInterval,"
+/**
+ * Clears an interval set by setInterval.
+ * @param {number} id - The id of the interval to clear
+ */
+"
+generate docstring for requestAnimationFrame,"
+/**
+ * Requests the browser to call a function for animating.
+ * @param {Function} callback - The function to execute
+ * @returns {number} The ID of the request animation frame
+ */
+"
+generate docstring for cancelAnimationFrame,"
+/**
+ * Cancels an animation frame request.
+ * @param {number} id - The id of the request to cancel
+ */
+"
+generate docstring for atob,"
+/**
+ * Decodes a base64 encoded string.
+ * @param {string} encodedString - The base64 string to decode
+ * @returns {string} The decoded string
+ */
+"
+generate docstring for btoa,"
+/**
+ * Encodes a string in base64.
+ * @param {string} string - The string to encode
+ * @returns {string} The base64 encoded string
+ */
+"
+generate docstring for Object,"
+/**
+ * The Object constructor creates an object wrapper.
+ * @param {*} value - The value to wrap (optional)
+ * @returns {Object} The new Object
+ */
+"
+generate docstring for Array,"
+/**
+ * The Array constructor creates an array.
+ * @param {*} elements - The array elements (optional)
+ * @returns {Array} The new Array
+ */
+"
+generate docstring for Number,"
+/**
+ * The Number constructor converts an object to a number.
+ * @param {*} value - The value to convert
+ * @returns {number} The number 
+ */
+"
+generate docstring for Boolean,"
+/**
+ * The Boolean constructor converts an object to a boolean value.
+ * @param {*} value - The value to convert
+ * @returns {boolean} The boolean value
+ */
+"
+generate docstring for String,"
+/**
+ * The String constructor converts an object to a string.
+ * @param {*} value - The value to convert
+ * @returns {string} The string 
+ */
+"
+generate docstring for RegExp,"
+/**
+ * The RegExp constructor creates a regular expression object.
+ * @param {string} pattern - The regex pattern  
+ * @param {string} flags - The regex flags
+ * @returns {RegExp} The RegExp object
+ */
+"
+generate docstring for Error,"
+/**
+ * The Error constructor creates an error object.
+ * @param {string} message - The error message
+ * @returns {Error} The Error object
+ */
+"
+generate docstring for TypeError,"
+/**
+ * Creates a type error.
+ * @param {string} message - The error message
+ * @returns {TypeError} The TypeError object
+ */
+"
+generate docstring for RangeError,"
+/**
+ * Creates a range error.
+ * @param {string} message - The error message
+ * @returns {RangeError} The RangeError object
+ */
+"
+generate docstring for SyntaxError,"
+/**
+ * Creates a syntax error.
+ * @param {string} message - The error message
+ * @returns {SyntaxError} The SyntaxError object
+ */
+"
+generate docstring for ReferenceError,"
+/**
+ * Creates a reference error.
+ * @param {string} message - The error message
+ * @returns {ReferenceError} The ReferenceError object  
+ */
+"
+generate docstring for URIError,"
+/**
+ * Creates a URI error.
+ * @param {string} message - The error message
+ * @returns {URIError} The URIError object
+ */
+"
+"generate docstring for
+  function linearSearch(arr, x) {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] === x) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  ","
+/**
+ * Performs a linear search on an array to find the index of a specified element.
+ * @param {number[]} arr - The array to search within.
+ * @param {number} x - The element to search for.
+ * @returns {number} The index of the element in the array or -1 if not found.
+ */
+"
+"generate docstring for
+  function binarySearch(arr, x) {
+    let start = 0;
+    let end = arr.length - 1;
+    while (start <= end) {
+      let mid = Math.floor((start + end) / 2);
+      if (arr[mid] === x) {
+        return mid;
+      }
+      if (arr[mid] < x) {
+        start = mid + 1;
+      } else {
+        end = mid - 1;  
+      }
+    }
+    return -1;
+  }
+  ","
+/**
+ * Performs a binary search on a sorted array to find the index of a specified element.
+ * @param {number[]} arr - The sorted array to search within.
+ * @param {number} x - The element to search for.
+ * @returns {number} The index of the element in the array or -1 if not found.
+ */
+"
+"generate docstring for
+  function selectionSort(arr) {
+    for (let i = 0; i < arr.length; i++) {
+      let minIdx = i;
+      for (let j = i + 1; j < arr.length; j++) {
+        if (arr[j] < arr[minIdx]) {
+          minIdx = j;
+        }
+      }
+      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+    }
+    return arr;
+  }
+  ","
+/**
+ * Sorts an array using the selection sort algorithm.
+ * @param {number[]} arr - The array to be sorted.
+ * @returns {number[]} The sorted array.
+ */
+"
+"generate docstring for
+  function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+      let current = arr[i];
+      let j = i - 1;
+      while (j >= 0 && arr[j] > current) {
+        arr[j + 1] = arr[j];
+        j--;
+      }
+      arr[j + 1] = current;
+    }
+    return arr;
+  }
+  ","
+/**
+ * Sorts an array using the insertion sort algorithm.
+ * @param {number[]} arr - The array to be sorted.
+ * @returns {number[]} The sorted array.
+ */
+"
+"generate docstring for
+  function mergeSort(arr) {
+    if (arr.length < 2) return arr;
+    let mid = Math.floor(arr.length / 2);
+    let left = mergeSort(arr.slice(0, mid));
+    let right = mergeSort(arr.slice(mid));
+    return merge(left, right);
+  }
+  
+  function merge(left, right) {
+    let result = [];
+    while (left.length && right.length) {
+      if (left[0] < right[0]) {
+        result.push(left.shift());
+      } else {
+        result.push(right.shift());
+      }
+    }
+    return [...result, ...left, ...right];
+  }
+  ","
+/**
+ * Sorts an array using the merge sort algorithm.
+ * @param {number[]} arr - The array to be sorted.
+ * @returns {number[]} The sorted array.
+ */
+
+/**
+ * Merges two sorted arrays into one sorted array.
+ * @param {number[]} left - The left sorted array.
+ * @param {number[]} right - The right sorted array.
+ * @returns {number[]} The merged sorted array.
+ */
+"
+"generate docstring for
+  function quickSort(arr) {
+    if (arr.length < 2) return arr;
+    let pivot = arr[0];
+    let left = [];
+    let right = [];
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] < pivot) left.push(arr[i]);
+      else right.push(arr[i]);
+    }
+    return [...quickSort(left), pivot, ...quickSort(right)];
+  }
+  ","
+/**
+ * Sorts an array using the quick sort algorithm.
+ * @param {number[]} arr - The array to be sorted.
+ * @returns {number[]} The sorted array.
+ */
+"
+"generate docstring for
+  function breadthFirstSearch(graph, start) {
+    let queue = [start];
+    let visited = new Set();
+    visited.add(start);
+    
+    while (queue.length > 0) {
+      let current = queue.shift();
+      console.log(current);
+      for (let neighbor of graph[current]) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          queue.push(neighbor);
+        }
+      }
+    }
+  }
+  ","
+/**
+ * Traverses a graph using the Breadth First Search algorithm.
+ * @param {Object} graph - The graph represented as an adjacency list.
+ * @param {string|number} start - The starting node.
+ */
+"
+"generate docstring for
+  function depthFirstSearch(graph, start) {
+    let stack = [start];
+    let visited = new Set();
+    visited.add(start);
+    
+    while (stack.length > 0) {
+      let current = stack.pop();
+      console.log(current);
+      for (let neighbor of graph[current]) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          stack.push(neighbor);
+        }
+      }
+    }
+  }
+  ","
+/**
+ * Traverses a graph using the Depth First Search algorithm.
+ * @param {Object} graph - The graph represented as an adjacency list.
+ * @param {string|number} start - The starting node.
+ */
+"
+Write a docstring for a function in javascript that takes in two numbers as parameters and returns their sum.,"/**
+ * Adds two numbers.
+ * @param {number} num1 - The first number.
+ * @param {number} num2 - The second number.
+ * @returns {number} The sum of the two numbers.
+ */"
+Write a docstring for a function in javascript that takes in an array of numbers as a parameter and returns the average of those numbers.,"/**
+ * Calculates the average of an array of numbers.
+ * @param {number[]} numbers - Array of numbers.
+ * @returns {number} The average of the numbers.
+ */"
+Write a docstring for a function in javascript that takes in a string as a parameter and returns the number of vowels in that string.,"/**
+ * Counts the number of vowels in a string.
+ * @param {string} str - The input string.
+ * @returns {number} The number of vowels in the string.
+ */"
+Write a docstring for a function in javascript that takes in an array of strings as a parameter and returns a new array with only the strings that have a length greater than 5.,"/**
+ * Filters an array of strings to only include those longer than 5 characters.
+ * @param {string[]} strings - Array of strings.
+ * @returns {string[]} Array of strings longer than 5 characters.
+ */"
+Write a docstring for a function  in javascript that takes in an object as a parameter and returns an array of its keys.,"/**
+ * Gets the keys of an object.
+ * @param {Object} obj - The input object.
+ * @returns {string[]} An array of keys from the object.
+ */"
+Write a docstring for a function in javascript that takes in an array of objects as a parameter and returns a new array with only the objects that have a specific property.,"/**
+ * Filters an array of objects to only include those with a specific property.
+ * @param {Object[]} objects - Array of objects.
+ * @param {string} property - Specific property to check for.
+ * @returns {Object[]} Array of objects with the specific property.
+ */"
+"Write a docstring for a function in javascript that takes in a number as a parameter and returns true if it is a prime number, and false otherwise.","/**
+ * Checks if a number is prime.
+ * @param {number} num - The input number.
+ * @returns {boolean} True if the number is prime, false otherwise.
+ */"
+Write a docstring for a function in javascript that takes in a string as a parameter and returns a new string with the vowels replaced by asterisks (*).,"/**
+ * Replaces vowels in a string with asterisks.
+ * @param {string} str - The input string.
+ * @returns {string} The string with vowels replaced by asterisks.
+ */"
+Write a docstring for a function in javascript that takes in an array of numbers as a parameter and returns the largest number in the array.,"/**
+ * Finds the largest number in an array.
+ * @param {number[]} numbers - Array of numbers.
+ * @returns {number} The largest number in the array.
+ */"
+Write a docstring for a C++ function that takes in two integers as parameters and returns their sum.,"/**
+ * Calculate the sum of two integers.
+ *
+ * @param num1 The first integer.
+ * @param num2 The second integer.
+ * @return The sum of `num1` and `num2`.
+ */ 
+int sum(int num1, int num2) {
+    return num1 + num2;
+}"
+Write a docstring for a C++ function that takes in a string as a parameter and returns the length of the string.,"/**
+ * Calculate the length of a string.
+ *
+ * @param str The input string.
+ * @return The length of `str`.
+ */ 
+int stringLength(const std::string& str) {
+    return str.length();
+}"
+Write a docstring for a C++ function that takes in an array of integers and returns the maximum value in the array.,"/**
+ * Find the maximum value in an array of integers.
+ *
+ * @param arr The input array.
+ * @param size The size of the array.
+ * @return The maximum value in `arr`.
+ */ 
+int findMax(const int* arr, int size) {
+    int max = arr[0];
+    for (int i = 1; i < size; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    return max;
+}"
+Write a docstring for a C++ function that takes in a vector of strings and returns a new vector containing only the strings that start with a vowel.,"/**
+ * Filter a vector of strings to include only the strings that start with a vowel.
+ *
+ * @param strings The input vector of strings.
+ * @return A new vector containing only the strings from `strings` that start with a vowel.
+ */ 
+std::vector<std::string> filterVowelStrings(const std::vector<std::string>& strings) {
+    std::vector<std::string> result;
+    for (const std::string& str : strings) {
+        char firstChar = std::tolower(str[0]);
+        if (firstChar == 'a' || firstChar == 'e' || firstChar == 'i' || firstChar == 'o' || firstChar == 'u') {
+            result.push_back(str);
+        }
+    }
+    return result;
+}"
+Write a docstring for a C++ function that takes in a vector of integers and returns the sum of all the even numbers in the vector.,"/**
+ * Calculate the sum of all the even numbers in a vector of integers.
+ *
+ * @param numbers The input vector of integers.
+ * @return The sum of all the even numbers in `numbers`.
+ */ 
+int sumEvenNumbers(const std::vector<int>& numbers) {
+    int sum = 0;
+    for (int num : numbers) {
+        if (num % 2 == 0) {
+            sum += num;
+        }
+    }
+    return sum;
+}"
+"Write a docstring for a C++ function that takes in a string and a character, and returns the number of occurrences of the character in the string.","/**
+ * Count the number of occurrences of a character in a string.
+ *
+ * @param str The input string.
+ * @param ch The character to count.
+ * @return The number of occurrences of `ch` in `str`.
+ */ 
+int countOccurrences(const std::string& str, char ch) {
+    int count = 0;
+    for (char c : str) {
+        if (c == ch) {
+            count++;
+        }
+    }
+    return count;
+}"
+Write a docstring for a C++ function that takes in a vector of integers and returns a new vector containing only the prime numbers from the input vector.,"/**
+ * Filter a vector of integers to include only the prime numbers.
+ *
+ * @param numbers The input vector of integers.
+ * @return A new vector containing only the prime numbers from `numbers`.
+ */ 
+std::vector<int> filterPrimeNumbers(const std::vector<int>& numbers) {
+    std::vector<int> primes;
+    for (int num : numbers) {
+        bool isPrime = true;
+        if (num <= 1) {
+            isPrime = false;
+        } else {
+            for (int i = 2; i <= num / 2; i++) {
+                if (num % i == 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+        }
+        if (isPrime) {
+            primes.push_back(num);
+        }
+    }
+    return primes;
+}"
+Write a docstring for a C++ function that takes in a string and returns a new string with all the vowels replaced by asterisks (*).,"/**
+ * Replace all the vowels in a string with asterisks.
+ *
+ * @param str The input string.
+ * @return A new string with all the vowels replaced by asterisks.
+ */ 
+std::string replaceVowelsWithAsterisks(const std::string& str) {
+    std::string result = str;
+    for (char& c : result) {
+        if (std::tolower(c) == 'a' || std::tolower(c) == 'e' || std::tolower(c) == 'i' || std::tolower(c) == 'o' || std::tolower(c) == 'u') {
+            c = '*';
+        }
+    }
+    return result;
+}"
+Write a docstring for a C++ function that takes in a vector of strings and returns the concatenation of all the strings in the vector.,"/**
+ * Concatenate all the strings in a vector into a single string.
+ *
+ * @param strings The input vector of strings.
+ * @return The concatenation of all the strings in `strings`.
+ */ 
+std::string concatenateStrings(const std::vector<std::string>& strings) {
+    std::string result;
+    for (const std::string& str : strings) {
+        result += str;
+    }
+    return result;
+}"
+docstring for a function that takes in a list of integers and returns the sum of all the even numbers in the list.,"/**
+ * Calculate the sum of all even numbers in a list.
+ *
+ * @param nums List of integers.
+ * @return Sum of all even numbers in the list.
+ */"
+docstring for a function that takes in a string and returns the number of vowels in the string.,"/**
+ * Count the number of vowels in a given string.
+ *
+ * @param str Input string.
+ * @return Number of vowels in the string.
+ */"
+docstring for a function that takes in a list of strings and returns a new list with only the strings that have more than 5 characters.,"/**
+ * Filter a list of strings to include only strings with more than 5 characters.
+ *
+ * @param strings List of strings.
+ * @return New list with only strings that have more than 5 characters.
+ */"
+docstring for a function that takes in a list of numbers and returns the average of all the numbers in the list.,"/**
+ * Calculate the average of a list of numbers.
+ *
+ * @param nums List of numbers.
+ * @return Average of all the numbers in the list.
+ */"
+docstring for a function that takes in a string and returns a new string with all the vowels removed.,"/**
+ * Remove all vowels from a given string.
+ *
+ * @param str Input string.
+ * @return New string with all vowels removed.
+ */"
+docstring for a function that takes in a list of strings and returns a new list with only the strings that start with a vowel.,"/**
+ * Filter a list of strings to include only strings that start with a vowel.
+ *
+ * @param strings List of strings.
+ * @return New list with only strings that start with a vowel.
+ */"
+docstring for a function that takes in a list of numbers and returns the maximum number in the list.,"/**
+ * Find the maximum number in a list of numbers.
+ *
+ * @param nums List of numbers.
+ * @return Maximum number in the list.
+ */"
+docstring for a function that takes in a string and returns the reverse of the string.,"/**
+ * Reverse a given string.
+ *
+ * @param str Input string.
+ * @return Reverse of the input string.
+ */"
+docstring for a function that takes in a list of strings and returns a new list with only the strings that contain the letter 'a'.,"/**
+ * Filter a list of strings to include only strings that contain the letter 'a'.
+ *
+ * @param strings List of strings.
+ * @return New list with only strings that contain the letter 'a'.
+ */"
+Write a docstring for a function that takes in a list of integers and returns the sum of all the odd numbers in the list divided by 2.,"/**
+ * Calculate the sum of all odd numbers in a list divided by 2.
+ *
+ * @param nums List of integers.
+ * @return Sum of all odd numbers in the list divided by 2.
+ 
+ */"
+Write a docstring for a function that takes in a string and returns the number of vowels in the string.,"/**
+ * Count the number of vowels in a string.
+ *
+ * @param str Input string.
+ * @return Number of vowels in the string.
+ * @example
+ * count_vowels(""hello"") => 2
+ * count_vowels(""world"") => 1
+ * count_vowels(""aeiou"") => 5
+ */"
+Write a docstring for a function that takes in a list of strings and returns a new list with only the strings that have more than 5 characters.,"/**
+ * Filter a list of strings to include only strings with more than 5 characters.
+ *
+ * @param strings List of strings.
+ * @return New list with only strings that have more than 5 characters.
+ * @example
+ * filter_long_strings([""hello"", ""world"", ""python"", ""programming""]) => [""python"", ""programming""]
+ * filter_long_strings([""a"", ""b"", ""c"", ""d"", ""e""]) => []
+ * filter_long_strings([""apple"", ""banana"", ""cherry"", ""date""]) => [""banana"", ""cherry""]
+ */"
+Write a docstring for a function that takes in a list of numbers and returns the product of all the numbers in the list.,"/**
+ * Calculate the product of all numbers in a list.
+ *
+ * @param nums List of numbers.
+ * @return Product of all numbers in the list.
+ * @example
+ * calculate_product([1, 2, 3, 4, 5]) => 120
+ * calculate_product([2, 4, 6, 8, 10]) => 3840
+ * calculate_product([0, 1, 2, 3, 4]) => 0
+ */"
+Write a docstring for a function that takes in a string and returns a new string with all the vowels removed.,"/**
+ * Remove all vowels from a string.
+ *
+ * @param str Input string.
+ * @return New string with all vowels removed.
+ * @example
+ * remove_vowels(""hello"") => ""hll""
+ * remove_vowels(""world"") => ""wrld""
+ * remove_vowels(""aeiou"") => """"
+ */"
+Write a docstring for a function that takes in a list of strings and returns a new list with only the strings that start with a vowel.,"/**
+ * Filter a list of strings to include only strings that start with a vowel.
+ *
+ * @param strings List of strings.
+ * @return New list with only strings that start with a vowel.
+ * @example
+ * filter_strings_starting_with_vowel([""apple"", ""banana"", ""cherry"", ""date""]) => [""apple""]
+ * filter_strings_starting_with_vowel([""hello"", ""world"", ""python"", ""programming""]) => []
+ * filter_strings_starting_with_vowel([""a"", ""b"", ""c"", ""d"", ""e""]) => [""a""]
+ */"
+Write a docstring for a function that takes in a list of numbers and returns the average of all the numbers in the list.,"/**
+ * Calculate the average of all numbers in a list.
+ *
+ * @param nums List of numbers.
+ * @return Average of all numbers in the list.
+ * @example
+ * calculate_average([1, 2, 3, 4, 5]) => 3.0
+ * calculate_average([2, 4, 6, 8, 10]) => 6.0
+ * calculate_average([0, 1, 2, 3, 4]) => 2.0
+ */"
+Write a docstring for a function that takes in a string and returns the reverse of the string.,"/**
+ * Reverse a string.
+ *
+ * @param str Input string.
+ * @return Reverse of the input string.
+ * @example
+ * reverse_string(""hello"") => ""olleh""
+ * reverse_string(""world"") => ""dlrow""
+ * reverse_string(""python"") => ""nohtyp""
+ */"
+Write a docstring for a function that takes in a list of strings and returns a new list with only the strings that contain the letter 'a'.,"/**
+ * Filter a list of strings to include only strings that contain the letter 'a'.
+ *
+ * @param strings List of strings.
+ * @return New list with only strings that contain the letter 'a'.
+ * @example
+ * filter_strings_containing_a([""apple"", ""banana"", ""cherry"", ""date""]) => [""apple"", ""banana""]
+ * filter_strings_containing_a([""hello"", ""world"", ""python"", ""programming""]) => [""banana"", ""programming""]
+ * filter_strings_containing_a([""a"", ""b"", ""c"", ""d"", ""e""]) => [""a""]
+ */"
+Write a docstring for a function that takes in a list of numbers and returns the maximum number in the list.,"/**
+ * Find the maximum number in a list.
+ *
+ * @param nums List of numbers.
+ * @return Maximum number in the list.
+ * @example
+ * find_maximum([1, 2, 3, 4, 5]) => 5
+ * find_maximum([2, 4, 6, 8, 10]) => 10
+ * find_maximum([0, 1, 2, 3, 4]) => 4
+ */"
+Write a docstring for a function that takes in a string and returns the number of words in the string.,"/**
+ * Count the number of words in a string.
+ *
+ * @param str Input string.
+ * @return Number of words in the string.
+ * @example
+ * count_words(""hello world"") => 2
+ * count_words(""python programming language"") => 3
+ * count_words(""a b c d e"") => 5
+ */"
+Write a docstring for a function that takes in a list of numbers and returns the average of all the numbers in the list.,"/**
+ * Calculate the average of all numbers in a list.
+ *
+ * @param nums List of numbers.
+ * @return Average of all numbers in the list.
+ * @example
+ * calculate_average([1, 2, 3, 4, 5]) => 3
+ * calculate_average([2, 4, 6, 8, 10]) => 6
+ * calculate_average([0, 1, 2, 3, 4]) => 2
+ */"
+Write a docstring for a function that takes in a list of strings and returns a new list with only the strings that are palindromes.,"/**
+ * Filter a list of strings to include only strings that are palindromes.
+ *
+ * @param strings List of strings.
+ * @return New list with only strings that are palindromes.
+ * @example
+ * filter_palindromes([""level"", ""radar"", ""python"", ""madam""]) => [""level"", ""radar"", ""madam""]
+ * filter_palindromes([""hello"", ""world"", ""python"", ""programming""]) => []
+ * filter_palindromes([""a"", ""b"", ""c"", ""d"", ""e""]) => [""a"", ""b"", ""c"", ""d"", ""e""]
+ */"
+Write a docstring for a function that takes in a list of strings and returns a new list with only the strings that have more than 5 characters.,"/**
+ * Filter a list of strings to include only strings that have more than 5 characters.
+ *
+ * @param strings List of strings.
+ * @return New list with only strings that have more than 5 characters.
+ * @example
+ * filter_strings_with_more_than_5_characters([""apple"", ""banana"", ""cherry"", ""date""]) => [""banana"", ""cherry""]
+ * filter_strings_with_more_than_5_characters([""hello"", ""world"", ""python"", ""programming""]) => [""programming""]
+ * filter_strings_with_more_than_5_characters([""a"", ""b"", ""c"", ""d"", ""e""]) => []
+ */"
+Write a docstring for a function that takes in a list of numbers and returns a new list with only the numbers that are divisible by 3.,"/**
+ * Filter a list of numbers to include only numbers that are divisible by 3.
+ *
+ * @param nums List of numbers.
+ * @return New list with only numbers that are divisible by 3.
+ * @example
+ * filter_divisible_by_3([1, 2, 3, 4, 5, 6]) => [3, 6]
+ * filter_divisible_by_3([3, 6, 9, 12, 15]) => [3, 6, 9, 12, 15]
+ * filter_divisible_by_3([2, 4, 8, 10]) => []
+ */"
+Write a docstring for a function that takes in a list of numbers and returns the sum of all the numbers in the list.,"/**
+ * Calculate the sum of all numbers in a list.
+ *
+ * @param nums List of numbers.
+ * @return Sum of all numbers in the list.
+ * @example
+ * calculate_sum([1, 2, 3, 4, 5]) => 15
+ * calculate_sum([2, 4, 6, 8, 10]) => 30
+ * calculate_sum([0, 1, 2, 3, 4]) => 10
+ */"
+Write a docstring for a function that takes in a list of numbers and returns a new list with only the even numbers from the original list.,"/**
+ * Filter a list of numbers to include only the even numbers.
+ *
+ * @param nums List of numbers.
+ * @return New list with only the even numbers from the original list.
+ * @example
+ * filter_even_numbers([1, 2, 3, 4, 5]) => [2, 4]
+ * filter_even_numbers([2, 4, 6, 8, 10]) => [2, 4, 6, 8, 10]
+ * filter_even_numbers([0, 1, 2, 3, 4]) => [0, 2, 4]
+ */"
+Write a docstring for a function that takes in a list of strings and returns a new list with only the strings that are all uppercase.,"/**
+ * Filter a list of strings to include only the strings that are all uppercase.
+ *
+ * @param strings List of strings.
+ * @return New list with only the strings that are all uppercase.
+ * @example
+ * filter_uppercase_strings([""HELLO"", ""WORLD"", ""PYTHON"", ""PROGRAMMING""]) => [""HELLO"", ""WORLD"", ""PYTHON"", ""PROGRAMMING""]
+ * filter_uppercase_strings([""hello"", ""world"", ""python"", ""programming""]) => []
+ * filter_uppercase_strings([""A"", ""B"", ""C"", ""D"", ""E""]) => [""A"", ""B"", ""C"", ""D"", ""E""]
+ */"
+Write a python function named `sum_numbers` that takes in a list of numbers as input and returns the sum of all the numbers in the list.,"```
+def sum_numbers(numbers):
+    """"""
+    Returns the sum of all the numbers in the given list.
+
+    Args:
+        numbers: A list of numbers.
+
+    Returns:
+        The sum of all the numbers in the list.
+    """"""
+    return sum(numbers)
+```"
+Write a python function named `calculate_average` that takes in a list of numbers as input and returns the average of all the numbers in the list.,"```
+def calculate_average(numbers):
+    """"""
+    Returns the average of all the numbers in the given list.
+
+    Args:
+        numbers: A list of numbers.
+
+    Returns:
+        The average of all the numbers in the list.
+    """"""
+    return sum(numbers) / len(numbers)
+```"
+Write a python function named `find_maximum` that takes in a list of numbers as input and returns the maximum number in the list.,"```
+def find_maximum(numbers):
+    """"""
+    Returns the maximum number in the given list.
+
+    Args:
+        numbers: A list of numbers.
+
+    Returns:
+        The maximum number in the list.
+    """"""
+    return max(numbers)
+```"
+Write a python function named `sort_list` that takes in a list of numbers as input and returns a new list with the numbers sorted in ascending order.,"```
+def sort_list(numbers):
+    """"""
+    Returns a new list with the numbers sorted in ascending order.
+
+    Args:
+        numbers: A list of numbers.
+
+    Returns:
+        A new list with the numbers sorted in ascending order.
+    """"""
+    return sorted(numbers)
+```"
+Write a python function named `calculate_factorial` that takes in a positive integer as input and returns the factorial of that number.,"```
+def calculate_factorial(n):
+    """"""
+    Returns the factorial of the given positive integer.
+
+    Args:
+        n: A positive integer.
+
+    Returns:
+        The factorial of the given number.
+    """"""
+    if n == 0 or n == 1:
+        return 1
+    else:
+        return n * calculate_factorial(n-1)
+```"
+"Write a python function named `count_vowels` that takes in a string as input and returns the number of vowels (a, e, i, o, u) in the string.","```
+def count_vowels(string):
+    """"""
+    Returns the number of vowels (a, e, i, o, u) in the given string.
+
+    Args:
+        string: A string.
+
+    Returns:
+        The number of vowels in the string.
+    """"""
+    vowel_count = 0
+    for char in string:
+        if char.lower() in ['a', 'e', 'i', 'o', 'u']:
+            vowel_count += 1
+    return vowel_count
+```"
+Write a python function named `reverse_string` that takes in a string as input and returns a new string with the characters in reverse order.,"```
+def reverse_string(string):
+    """"""
+    Returns a new string with the characters in reverse order.
+
+    Args:
+        string: A string.
+
+    Returns:
+        A new string with the characters in reverse order.
+    """"""
+    return string[::-1]
+```"
+Write a python function named `remove_duplicates` that takes in a list of numbers as input and returns a new list with duplicate elements removed.,"```
+def remove_duplicates(numbers):
+    """"""
+    Returns a new list with duplicate elements removed.
+
+    Args:
+        numbers: A list of numbers.
+
+    Returns:
+        A new list with duplicate elements removed.
+    """"""
+    return list(set(numbers))
+```"
+Write a python function named `capitalize_string` that takes in a string as input and returns a new string with the first letter of each word capitalized.,"```
+def capitalize_string(string):
+    """"""
+    Returns a new string with the first letter of each word capitalized.
+
+    Args:
+        string: A string.
+
+    Returns:
+        A new string with the first letter of each word capitalized.
+    """"""
+    return ' '.join(word.capitalize() for word in string.split())
+```"
+Write a python function named `get_common_elements` that takes in two lists as input and returns a new list containing the common elements between the two input lists.,"```
+def get_common_elements(list1, list2):
+    """"""
+    Returns a new list containing the common elements between the two input lists.
+
+    Args:
+        list1: The first list.
+        list2: The second list.
+
+    Returns:
+        A new list containing the common elements between the two input lists.
+    """"""
+    return list(set(list1) & set(list2))
+```"
+Write a python function named `find_prime_numbers` that takes in a positive integer as input and returns a list of all prime numbers up to and including that number.,"```
+def find_prime_numbers(n):
+    """"""
+    Returns a list of all prime numbers up to and including the given positive integer.
+
+    Args:
+        n: A positive integer.
+
+    Returns:
+        A list of all prime numbers up to and including the given number.
+    """"""
+    prime_numbers = []
+    for num in range(2, n+1):
+        is_prime = True
+        for i in range(2, int(num**0.5) + 1):
+            if num % i == 0:
+                is_prime = False
+                break
+        if is_prime:
+            prime_numbers.append(num)
+    return prime_numbers
+```"
+"Write a python function named `is_palindrome` that takes in a string as input and returns True if the string is a palindrome (reads the same forwards and backwards), and False otherwise.","```
+def is_palindrome(string):
+    """"""
+    Returns True if the given string is a palindrome (reads the same forwards and backwards), and False otherwise.
+
+    Args:
+        string: A string.
+
+    Returns:
+        True if the string is a palindrome, False otherwise.
+    """"""
+    reversed_string = string[::-1]
+    return string == reversed_string
+```"
+Write a python function named `calculate_power` that takes in two numbers as input: a base number and an exponent number. The function should return the result of raising the base number to the power of the exponent number.,"```
+def calculate_power(base, exponent):
+    """"""
+    Returns the result of raising the base number to the power of the exponent number.
+
+    Args:
+        base: The base number.
+        exponent: The exponent number.
+
+    Returns:
+        The result of raising the base number to the power of the exponent number.
+    """"""
+    return base ** exponent
+```"
+Write a python function named `find_common_elements` that takes in two lists as input and returns a new list containing the common elements between the two input lists.,"```
+def find_common_elements(list1, list2):
+    """"""
+    Returns a new list containing the common elements between the given two lists.
+
+    Args:
+        list1: The first list.
+        list2: The second list.
+
+    Returns:
+        A new list containing the common elements between the two input lists.
+    """"""
+    return list(set(list1) & set(list2))
+```"
+"Write a python function named `is_palindrome` that takes in a string as input and returns True if the string is a palindrome, and False otherwise. A palindrome is a word, phrase, number, or other sequence of characters that reads the same forward and backward, ignoring spaces, punctuation, and capitalization.","```
+def is_palindrome(string):
+    """"""
+    Returns True if the given string is a palindrome, and False otherwise.
+
+    Args:
+        string: A string.
+
+    Returns:
+        True if the string is a palindrome, False otherwise.
+    """"""
+    string = string.lower().replace("" "", """").replace("","", """").replace(""."", """")
+    return string == string[::-1]
+```"
+Write a python function named `calculate_area` that takes in the length and width of a rectangle as input and returns the area of the rectangle.,"```
+def calculate_area(length, width):
+    """"""
+    Returns the area of a rectangle given its length and width.
+
+    Args:
+        length: The length of the rectangle.
+        width: The width of the rectangle.
+
+    Returns:
+        The area of the rectangle.
+    """"""
+    return length * width
+```"
+"Write a python function named `is_palindrome` that takes in a string as input and returns True if the string is a palindrome, and False otherwise.","```
+def is_palindrome(string):
+    """"""
+    Returns True if the given string is a palindrome, and False otherwise.
+
+    Args:
+        string: A string.
+
+    Returns:
+        True if the string is a palindrome, False otherwise.
+    """"""
+    reversed_string = string[::-1]
+    if string == reversed_string:
+        return True
+    else:
+        return False
+```"
+"Write a python function named `check_prime` that takes in a number as input and returns True if the number is prime, and False otherwise.","```
+def check_prime(number):
+    """"""
+    Returns True if the given number is prime, and False otherwise.
+
+    Args:
+        number: An integer.
+
+    Returns:
+        True if the number is prime, False otherwise.
+    """"""
+    if number < 2:
+        return False
+    for i in range(2, int(number ** 0.5) + 1):
+        if number % i == 0:
+            return False
+    return True
+```"
+"Write a function named `calculate_area` that takes in two parameters, `length` and `width`, and returns the area of a rectangle. The area of a rectangle is calculated by multiplying the length and width. In your function, make sure to include a docstring that explains the purpose of the function, its parameters, and its return value. Also, include an example usage of the function in the docstring.","``` def calculate_area(length, width): """""" Calculate the area of a rectangle given its length and width. Args: length (float): The length of the rectangle. width (float): The width of the rectangle. Returns: float: The area of the rectangle. Example: ``` rectangle_length = 5.0 rectangle_width = 3.0 rectangle_area = calculate_area(rectangle_length, rectangle_width) print(rectangle_area) # Output: 15.0 ``` """""" return length * width ```"
+"Write a docstring for a Python function called `linear_regression` that implements the linear regression algorithm. The function should take in two parameters: `X` and `y`, which are the input features and target values, respectively. The function should return the coefficients of the linear regression model. Use the `numpy` library to perform the necessary calculations. For example: ```python import numpy as np def linear_regression(X, y): # Code goes here X = np.array([[1, 2], [3, 4], [5, 6]]) y = np.array([3, 5, 7]) coefficients = linear_regression(X, y) print(coefficients) ```","```"""""" Perform linear regression on the given input features and target values. Parameters: - X (numpy.ndarray): Input features, where each row represents a sample and each column represents a feature. - y (numpy.ndarray): Target values. Returns: - coefficients (numpy.ndarray): Coefficients of the linear regression model. Example: >>> import numpy as np >>> X = np.array([[1, 2], [3, 4], [5, 6]]) >>> y = np.array([3, 5, 7]) >>> coefficients = linear_regression(X, y) >>> print(coefficients) [1. 1.] """""" ```"
+"Write a docstring for the following function: ```python def add_numbers(a, b): """""" This function takes two numbers as input and returns their sum. Parameters: a (int): The first number. b (int): The second number. Returns: int: The sum of the two numbers. Examples: >>> add_numbers(2, 3) 5 >>> add_numbers(-1, 5) 4 """""" return a + b ```","```python """""" This function takes two numbers as input and returns their sum. Parameters: a (int): The first number. b (int): The second number. Returns: int: The sum of the two numbers. Examples: >>> add_numbers(2, 3) 5 >>> add_numbers(-1, 5) 4 """""" ```"
+"Write a docstring for the following function: ```python def multiply_numbers(a, b): """""" This function takes two numbers as input and returns their product. Parameters: a (int): The first number. b (int): The second number. Returns: int: The product of the two numbers. Examples: >>> multiply_numbers(2, 3) 6 >>> multiply_numbers(-1, 5) -5 """""" return a * b ```","```python """""" This function takes two numbers as input and returns their product. Parameters: a (int): The first number. b (int): The second number. Returns: int: The product of the two numbers. Examples: >>> multiply_numbers(2, 3) 6 >>> multiply_numbers(-1, 5) -5 """""" ```"
+"Write a docstring for the following function: ```python def calculate_average(numbers): """""" This function takes a list of numbers as input and returns the average. Parameters: numbers (list): A list of numbers. Returns: float: The average of the numbers. Examples: >>> calculate_average([1, 2, 3, 4, 5]) 3.0 >>> calculate_average([10, 20, 30, 40, 50]) 30.0 """""" total = sum(numbers) average = total / len(numbers) return average ```","```python """""" This function takes a list of numbers as input and returns the average. Parameters: numbers (list): A list of numbers. Returns: float: The average of the numbers. Examples: >>> calculate_average([1, 2, 3, 4, 5]) 3.0 >>> calculate_average([10, 20, 30, 40, 50]) 30.0 """""" ```"
+"Write a docstring for the following function: ```python def find_maximum(numbers): """""" This function takes a list of numbers as input and returns the maximum value. Parameters: numbers (list): A list of numbers. Returns: int: The maximum value in the list. Examples: >>> find_maximum([1, 2, 3, 4, 5]) 5 >>> find_maximum([10, 20, 30, 40, 50]) 50 """""" maximum = max(numbers) return maximum ```","```python """""" This function takes a list of numbers as input and returns the maximum value. Parameters: numbers (list): A list of numbers. Returns: int: The maximum value in the list. Examples: >>> find_maximum([1, 2, 3, 4, 5]) 5 >>> find_maximum([10, 20, 30, 40, 50]) 50 """""" ```"
+"Write a docstring for the following function: ```python def is_prime(number): """""" This function takes a number as input and checks if it is a prime number. Parameters: number (int): The number to be checked. Returns: bool: True if the number is prime, False otherwise. Examples: >>> is_prime(2) True >>> is_prime(4) False """""" if number < 2: return False for i in range(2, int(number ** 0.5) + 1): if number % i == 0: return False return True ```","```python """""" This function takes a number as input and checks if it is a prime number. Parameters: number (int): The number to be checked. Returns: bool: True if the number is prime, False otherwise. Examples: >>> is_prime(2) True >>> is_prime(4) False """""" ```"
+"Write a docstring for def hist_series(self, by=None, ax=None, grid: bool=True, xlabelsize: int | None=None, xrot: float | None=None, ylabelsize: int | None=None, yrot: float | None=None, figsize: tuple[int, int] | None=None, bins: int | Sequence[int]=10, backend: str | None=None, legend: bool=False, **kwargs):
+    plot_backend = _get_plot_backend(backend)
+    return plot_backend.hist_series(self, by=by, ax=ax, grid=grid, xlabelsize=xlabelsize, xrot=xrot, ylabelsize=ylabelsize, yrot=yrot, figsize=figsize, bins=bins, legend=legend, **kwargs)","Draw histogram of the input series using matplotlib.
+
+Parameters
+----------
+by : object, optional
+    If passed, then used to form histograms for separate groups.
+ax : matplotlib axis object
+    If not passed, uses gca().
+grid : bool, default True
+    Whether to show axis grid lines.
+xlabelsize : int, default None
+    If specified changes the x-axis label size.
+xrot : float, default None
+    Rotation of x axis labels.
+ylabelsize : int, default None
+    If specified changes the y-axis label size.
+yrot : float, default None
+    Rotation of y axis labels.
+figsize : tuple, default None
+    Figure size in inches by default.
+bins : int or sequence, default 10
+    Number of histogram bins to be used. If an integer is given, bins + 1
+    bin edges are calculated and returned. If bins is a sequence, gives
+    bin edges, including left edge of first bin and right edge of last
+    bin. In this case, bins is returned unmodified.
+backend : str, default None
+    Backend to use instead of the backend specified in the option
+    ``plotting.backend``. For instance, 'matplotlib'. Alternatively, to
+    specify the ``plotting.backend`` for the whole session, set
+    ``pd.options.plotting.backend``.
+legend : bool, default False
+    Whether to show the legend.
+
+**kwargs
+    To be passed to the actual plotting function.
+
+Returns
+-------
+matplotlib.AxesSubplot
+    A histogram plot.
+
+See Also
+--------
+matplotlib.axes.Axes.hist : Plot a histogram using matplotlib.
+
+Examples
+--------
+For Series:
+
+.. plot::
+    :context: close-figs
+
+    >>> lst = ['a', 'a', 'a', 'b', 'b', 'b']
+    >>> ser = pd.Series([1, 2, 2, 4, 6, 6], index=lst)
+    >>> hist = ser.hist()
+
+For Groupby:
+
+.. plot::
+    :context: close-figs
+
+    >>> lst = ['a', 'a', 'a', 'b', 'b', 'b']
+    >>> ser = pd.Series([1, 2, 2, 4, 6, 6], index=lst)
+    >>> hist = ser.groupby(level=0).hist()"
+"Write a docstring for def hist_frame(data: DataFrame, column: IndexLabel | None=None, by=None, grid: bool=True, xlabelsize: int | None=None, xrot: float | None=None, ylabelsize: int | None=None, yrot: float | None=None, ax=None, sharex: bool=False, sharey: bool=False, figsize: tuple[int, int] | None=None, layout: tuple[int, int] | None=None, bins: int | Sequence[int]=10, backend: str | None=None, legend: bool=False, **kwargs):
+    plot_backend = _get_plot_backend(backend)
+    return plot_backend.hist_frame(data, column=column, by=by, grid=grid, xlabelsize=xlabelsize, xrot=xrot, ylabelsize=ylabelsize, yrot=yrot, ax=ax, sharex=sharex, sharey=sharey, figsize=figsize, layout=layout, legend=legend, bins=bins, **kwargs)","Make a histogram of the DataFrame's columns.
+
+A `histogram`_ is a representation of the distribution of data.
+This function calls :meth:`matplotlib.pyplot.hist`, on each series in
+the DataFrame, resulting in one histogram per column.
+
+.. _histogram: https://en.wikipedia.org/wiki/Histogram
+
+Parameters
+----------
+data : DataFrame
+    The pandas object holding the data.
+column : str or sequence, optional
+    If passed, will be used to limit data to a subset of columns.
+by : object, optional
+    If passed, then used to form histograms for separate groups.
+grid : bool, default True
+    Whether to show axis grid lines.
+xlabelsize : int, default None
+    If specified changes the x-axis label size.
+xrot : float, default None
+    Rotation of x axis labels. For example, a value of 90 displays the
+    x labels rotated 90 degrees clockwise.
+ylabelsize : int, default None
+    If specified changes the y-axis label size.
+yrot : float, default None
+    Rotation of y axis labels. For example, a value of 90 displays the
+    y labels rotated 90 degrees clockwise.
+ax : Matplotlib axes object, default None
+    The axes to plot the histogram on.
+sharex : bool, default True if ax is None else False
+    In case subplots=True, share x axis and set some x axis labels to
+    invisible; defaults to True if ax is None otherwise False if an ax
+    is passed in.
+    Note that passing in both an ax and sharex=True will alter all x axis
+    labels for all subplots in a figure.
+sharey : bool, default False
+    In case subplots=True, share y axis and set some y axis labels to
+    invisible.
+figsize : tuple, optional
+    The size in inches of the figure to create. Uses the value in
+    `matplotlib.rcParams` by default.
+layout : tuple, optional
+    Tuple of (rows, columns) for the layout of the histograms.
+bins : int or sequence, default 10
+    Number of histogram bins to be used. If an integer is given, bins + 1
+    bin edges are calculated and returned. If bins is a sequence, gives
+    bin edges, including left edge of first bin and right edge of last
+    bin. In this case, bins is returned unmodified.
+
+backend : str, default None
+    Backend to use instead of the backend specified in the option
+    ``plotting.backend``. For instance, 'matplotlib'. Alternatively, to
+    specify the ``plotting.backend`` for the whole session, set
+    ``pd.options.plotting.backend``.
+
+legend : bool, default False
+    Whether to show the legend.
+
+**kwargs
+    All other plotting keyword arguments to be passed to
+    :meth:`matplotlib.pyplot.hist`.
+
+Returns
+-------
+matplotlib.AxesSubplot or numpy.ndarray of them
+
+See Also
+--------
+matplotlib.pyplot.hist : Plot a histogram using matplotlib.
+
+Examples
+--------
+This example draws a histogram based on the length and width of
+some animals, displayed in three bins
+
+.. plot::
+    :context: close-figs
+
+    >>> df = pd.DataFrame({
+    ...     'length': [1.5, 0.5, 1.2, 0.9, 3],
+    ...     'width': [0.7, 0.2, 0.15, 0.2, 1.1]
+    ...     }, index=['pig', 'rabbit', 'duck', 'chicken', 'horse'])
+    >>> hist = df.hist(bins=3)"
+"Write a docstring for def boxplot_frame_groupby(grouped, subplots: bool=True, column=None, fontsize: int | None=None, rot: int=0, grid: bool=True, ax=None, figsize: tuple[float, float] | None=None, layout=None, sharex: bool=False, sharey: bool=True, backend=None, **kwargs):
+    plot_backend = _get_plot_backend(backend)
+    return plot_backend.boxplot_frame_groupby(grouped, subplots=subplots, column=column, fontsize=fontsize, rot=rot, grid=grid, ax=ax, figsize=figsize, layout=layout, sharex=sharex, sharey=sharey, **kwargs)","Make box plots from DataFrameGroupBy data.
+
+Parameters
+----------
+grouped : Grouped DataFrame
+subplots : bool
+    * ``False`` - no subplots will be used
+    * ``True`` - create a subplot for each group.
+
+column : column name or list of names, or vector
+    Can be any valid input to groupby.
+fontsize : float or str
+rot : label rotation angle
+grid : Setting this to True will show the grid
+ax : Matplotlib axis object, default None
+figsize : A tuple (width, height) in inches
+layout : tuple (optional)
+    The layout of the plot: (rows, columns).
+sharex : bool, default False
+    Whether x-axes will be shared among subplots.
+sharey : bool, default True
+    Whether y-axes will be shared among subplots.
+backend : str, default None
+    Backend to use instead of the backend specified in the option
+    ``plotting.backend``. For instance, 'matplotlib'. Alternatively, to
+    specify the ``plotting.backend`` for the whole session, set
+    ``pd.options.plotting.backend``.
+**kwargs
+    All other plotting keyword arguments to be passed to
+    matplotlib's boxplot function.
+
+Returns
+-------
+dict of key/value = group key/DataFrame.boxplot return value
+or DataFrame.boxplot return value in case subplots=figures=False
+
+Examples
+--------
+You can create boxplots for grouped data and show them as separate subplots:
+
+.. plot::
+    :context: close-figs
+
+    >>> import itertools
+    >>> tuples = [t for t in itertools.product(range(1000), range(4))]
+    >>> index = pd.MultiIndex.from_tuples(tuples, names=['lvl0', 'lvl1'])
+    >>> data = np.random.randn(len(index),4)
+    >>> df = pd.DataFrame(data, columns=list('ABCD'), index=index)
+    >>> grouped = df.groupby(level='lvl1')
+    >>> grouped.boxplot(rot=45, fontsize=12, figsize=(8,10))  # doctest: +SKIP
+
+The ``subplots=False`` option shows the boxplots in a single figure.
+
+.. plot::
+    :context: close-figs
+
+    >>> grouped.boxplot(subplots=False, rot=45, fontsize=12)  # doctest: +SKIP"
+"Write a docstring for def _load_backend(backend: str) -> types.ModuleType:
+    from importlib.metadata import entry_points
+    if backend == 'matplotlib':
+        try:
+            module = importlib.import_module('pandas.plotting._matplotlib')
+        except ImportError:
+            raise ImportError('matplotlib is required for plotting when the default backend ""matplotlib"" is selected.') from None
+        return module
+    found_backend = False
+    eps = entry_points()
+    key = 'pandas_plotting_backends'
+    if hasattr(eps, 'select'):
+        entry = eps.select(group=key)
+    else:
+        entry = eps.get(key, ())
+    for entry_point in entry:
+        found_backend = entry_point.name == backend
+        if found_backend:
+            module = entry_point.load()
+            break
+    if not found_backend:
+        try:
+            module = importlib.import_module(backend)
+            found_backend = True
+        except ImportError:
+            pass
+    if found_backend:
+        if hasattr(module, 'plot'):
+            return module
+    raise ValueError(f""Could not find plotting backend '{backend}'. Ensure that you've installed the package providing the '{backend}' entrypoint, or that the package has a top-level `.plot` method."")","Load a pandas plotting backend.
+
+Parameters
+----------
+backend : str
+    The identifier for the backend. Either an entrypoint item registered
+    with importlib.metadata, ""matplotlib"", or a module name.
+
+Returns
+-------
+types.ModuleType
+    The imported backend."
+"Write a docstring for def _get_plot_backend(backend: str | None=None):
+    backend_str: str = backend or get_option('plotting.backend')
+    if backend_str in _backends:
+        return _backends[backend_str]
+    module = _load_backend(backend_str)
+    _backends[backend_str] = module
+    return module","Return the plotting backend to use (e.g. `pandas.plotting._matplotlib`).
+
+The plotting system of pandas uses matplotlib by default, but the idea here
+is that it can also work with other third-party backends. This function
+returns the module which provides a top-level `.plot` method that will
+actually do the plotting. The backend is specified from a string, which
+either comes from the keyword argument `backend`, or, if not specified, from
+the option `pandas.options.plotting.backend`. All the rest of the code in
+this file uses the backend specified there for the plotting.
+
+The backend is imported lazily, as matplotlib is a soft dependency, and
+pandas can be used without it being installed.
+
+Notes
+-----
+Modifies `_backends` with imported backend as a side effect."
